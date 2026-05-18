@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: childoland-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-childoland}
+      POSTGRES_USER: ${DB_USER:-childoland}
+      POSTGRES_PASSWORD: ${DB_PASS:-childoland}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - childoland-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-childoland} -d ${DB_NAME:-childoland}"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  childoland-pgdata:
